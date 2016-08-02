@@ -6,6 +6,8 @@
     <script src="stomp.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        var clientID = new Date().getTime();
+        
         
         function setConnected(connected) {
             document.getElementById('connect').disabled = connected;
@@ -20,7 +22,13 @@
             stompClient.connect({}, function(frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/greetings', function(greeting){
+               /* stompClient.subscribe('/topic/greetings1', function(greeting){
+                    showGreeting(JSON.parse(greeting.body).content);
+                });*/
+                /*stompClient.subscribe('/queue/greetings1', function(greeting){
+                    showGreeting(JSON.parse(greeting.body).content);
+                });*/
+                stompClient.subscribe('/user/queue/greetings1', function(greeting){
                     showGreeting(JSON.parse(greeting.body).content);
                 });
             });
@@ -36,7 +44,7 @@
         
         function sendName() {
             var name = document.getElementById('name').value;
-            stompClient.send("/app/hello", {}, JSON.stringify({ 'name': name }));
+            stompClient.send("/app/hello", {}, JSON.stringify({ 'name': name , 'clientID': clientID}));
         }
         
         function showGreeting(message) {
